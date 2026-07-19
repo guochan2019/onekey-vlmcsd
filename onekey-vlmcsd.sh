@@ -68,6 +68,7 @@ do_install() {
 
   # 3. 安装到系统
   info "=== 3/4 安装二进制 ==="
+  mkdir -p "$INSTALL_DIR" /var/log/vlmcsd
   # 备份旧的二进制
   if [ -f "$BIN" ]; then
     cp "$BIN" "${BIN}.bak.$(date +%Y%m%d_%H%M%S)"
@@ -84,8 +85,6 @@ do_install() {
     ln -sf "${INSTALL_DIR}/vlmcs" /usr/local/bin/vlmcs 2>/dev/null || true
     info "  ✓ vlmcs 客户端已安装到 ${INSTALL_DIR}/vlmcs"
   fi
-
-  mkdir -p "$INSTALL_DIR" /var/log/vlmcsd
 
   # 4. 创建 systemd 服务
   info "=== 4/4 创建 systemd 服务 ==="
