@@ -74,11 +74,11 @@ do_install() {
     cp "$BIN" "${BIN}.bak.$(date +%Y%m%d_%H%M%S)"
     info "  ✓ 旧二进制已备份"
   fi
-  
+
   cp "$VLMCSD" "$BIN"
   chmod +x "$BIN"
   info "  ✓ vlmcsd 已安装到 ${BIN}"
-  
+
   if [ -n "$VLMCS" ]; then
     cp "$VLMCS" "${INSTALL_DIR}/vlmcs"
     chmod +x "${INSTALL_DIR}/vlmcs"
