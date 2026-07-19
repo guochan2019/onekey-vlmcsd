@@ -13,7 +13,7 @@ trap 'echo -e "\033[0;31m[ERROR] 脚本执行失败，请检查:\033[0m
 
 # ---------- 配置 ----------
 INSTALL_DIR="/opt/vlmcsd"
-BIN="/usr/local/bin/vlmcsd"
+BIN="${INSTALL_DIR}/vlmcsd"
 
 # ---------- 彩色输出 ----------
 GREEN='\033[0;32m'; YELLOW='\033[1;33m'; RED='\033[0;31m'; NC='\033[0m'
@@ -79,12 +79,13 @@ do_install() {
   info "  ✓ vlmcsd 已安装到 ${BIN}"
   
   if [ -n "$VLMCS" ]; then
-    cp "$VLMCS" "/usr/local/bin/vlmcs"
-    chmod +x "/usr/local/bin/vlmcs"
-    info "  ✓ vlmcs 客户端已安装到 /usr/local/bin/vlmcs"
+    cp "$VLMCS" "${INSTALL_DIR}/vlmcs"
+    chmod +x "${INSTALL_DIR}/vlmcs"
+    ln -sf "${INSTALL_DIR}/vlmcs" /usr/local/bin/vlmcs 2>/dev/null || true
+    info "  ✓ vlmcs 客户端已安装到 ${INSTALL_DIR}/vlmcs"
   fi
 
-  mkdir -p /var/log/vlmcsd
+  mkdir -p "$INSTALL_DIR" /var/log/vlmcsd
 
   # 4. 创建 systemd 服务
   info "=== 4/4 创建 systemd 服务 ==="
@@ -96,7 +97,8 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/vlmcsd -D -l /var/log/vlmcsd/vlmcsd.log
+WorkingDirectory=/opt/vlmcsd
+ExecStart=/opt/vlmcsd/vlmcsd -D -l /var/log/vlmcsd/vlmcsd.log
 Restart=on-failure
 RestartSec=5
 LimitNOFILE=65536
@@ -153,8 +155,9 @@ do_uninstall() {
   systemctl daemon-reload
   info "  ✓ service 文件已删除"
   
-  # 删除二进制
-  rm -f /usr/local/bin/vlmcsd /usr/local/bin/vlmcs
+  # 删除二进制和软链接
+  rm -f "${INSTALL_DIR}/vlmcsd" "${INSTALL_DIR}/vlmcs"
+  rm -f /usr/local/bin/vlmcs
   info "  ✓ 二进制文件已删除"
   
   # 删除日志

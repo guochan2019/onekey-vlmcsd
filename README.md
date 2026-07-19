@@ -44,7 +44,7 @@ wget -qO- https://raw.githubusercontent.com/guochan2019/onekey-vlmcsd/main/oneke
 |------|------|
 | 1/4 | 安装系统依赖（wget、curl） |
 | 2/4 | 从 Wind4/vlmcsd release 下载并解包二进制 |
-| 3/4 | 安装 vlmcsd + vlmcs 到 /usr/local/bin/ |
+| 3/4 | 安装 vlmcsd + vlmcs 到 /opt/vlmcsd/ |
 | 4/4 | 创建 systemd 服务并启动 |
 
 ## 使用说明
@@ -70,9 +70,12 @@ cscript ospp.vbs /act
 ## 目录结构
 
 ```
-/usr/local/bin/vlmcsd        # vlmcsd 守护进程（KMS 服务端）
-/usr/local/bin/vlmcs         # vlmcs 命令行客户端
-/var/log/vlmcsd/vlmcsd.log   # 运行日志
+/opt/vlmcsd/
+├── vlmcsd                      # vlmcsd 守护进程（KMS 服务端）
+└── vlmcs                       # vlmcs 命令行客户端
+
+/usr/local/bin/vlmcs -> /opt/vlmcsd/vlmcs   # 软链接，方便命令行调用
+/var/log/vlmcsd/vlmcsd.log      # 运行日志
 ```
 
 ## 服务管理
